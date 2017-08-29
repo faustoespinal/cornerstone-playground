@@ -1,0 +1,59 @@
+{
+  "studyList" : [ {
+    "patientName" : "test",
+    "patientId" : "123",
+    "studyDate" : "19970210",
+    "modality" : "MR",
+    "studyDescription" : "head",
+    "studyId" : "16",
+    "numImages" : 52
+  }, {
+    "patientName" : "Legs^Stacked",
+    "patientId" : "MF-0000005",
+    "studyDate" : "20061219",
+    "modality" : "MR",
+    "studyDescription" : "Multiple adjacent stacks",
+    "studyId" : "05005",
+    "numImages" : 1
+  }, {
+    "patientName" : "LS_Direct3d",
+    "patientId" : "09 03 40 96",
+    "studyDate" : "20000727",
+    "modality" : "CT",
+    "studyDescription" : "KIDNEY DONOR",
+    "studyId" : "306",
+    "numImages" : 129
+  }, {
+    "patientName" : "Breast^Dynamic",
+    "patientId" : "MF-0000002",
+    "studyDate" : "20061219",
+    "modality" : "MR",
+    "studyDescription" : "Dynamic breast,1 stack,3 dimensions,temporal position,no concat",
+    "studyId" : "05002",
+    "numImages" : 1
+  }, {
+    "patientName" : "^CIP_Hand",
+    "patientId" : "111-3",
+    "studyDate" : "20050913",
+    "modality" : "DX",
+    "studyDescription" : "",
+    "studyId" : "Def_Study_ID",
+    "numImages" : 5
+  }, {
+    "patientName" : "BRAUN MARY V",
+    "patientId" : "00673235",
+    "studyDate" : "20050329",
+    "modality" : "MR",
+    "studyDescription" : "MR-ABDOMEN W/O CON",
+    "studyId" : "103",
+    "numImages" : 15
+  }, {
+    "patientName" : "^CIP_Chest3",
+    "patientId" : "111-1c",
+    "studyDate" : "20110808",
+    "modality" : "DX",
+    "studyDescription" : "",
+    "studyId" : "Def_Study_ID",
+    "numImages" : 9
+  } ]
+}

@@ -10,8 +10,19 @@ loadTemplate("templates/studyViewer.html", function(element) {
     studyViewerTemplate = element;
 });
 
+var getUrl = window.location;
+var theHost = getUrl.host;
+// var theHost = SVC_CONFIG.dicomDbUrl;
+$.ajaxSetup({
+    headers: {
+        'Host': 'cornerstone-viewer.edison'
+    }
+});
+
+var studyUri = getUrl.protocol + '//'+theHost+'/v1/studies';
+console.log('Fetching from:',studyUri);
 // Get study list from JSON manifest
-$.getJSON('studyList.json', function(data) {
+$.getJSON(studyUri, function(data) {
   data.studyList.forEach(function(study) {
 
     // Create one table row for each study in the manifest
@@ -56,7 +67,7 @@ $.getJSON('studyList.json', function(data) {
       });
 
       // Now load the study.json
-      loadStudy(studyViewerCopy, viewportTemplate, study.studyId + ".json");
+      loadStudy(studyViewerCopy, viewportTemplate, study.studyId);
     });
   });
 });

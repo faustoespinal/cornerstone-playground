@@ -1,9 +1,24 @@
 
+var SVC_CONFIG = {
+   dicomDbUrl : 'localhost:8088',
+   storageUrl : 'localhost:8086'
+};
+
 // Load JSON study information for each study
 function loadStudy(studyViewer, viewportModel, studyId) {
+    var getUrl = window.location;
+    var theHost = getUrl.host;
+    //theHost = SVC_CONFIG.dicomDbUrl;
+// Get the JSON data for the selected studyId
+    var studyDetailUri = getUrl .protocol + "//" + theHost+'/v1/study/'+studyId;
 
-    // Get the JSON data for the selected studyId
-    $.getJSON('studies/' + studyId, function(data) {
+    $.ajaxSetup({
+        headers: {
+            'Host': 'cornerstone-viewer.edison'
+        }
+    });
+
+    $.getJSON(studyDetailUri, function(data) {
 
         var imageViewer = new ImageViewer(studyViewer, viewportModel);
         imageViewer.setLayout('1x1'); // default layout
@@ -64,6 +79,10 @@ function loadStudy(studyViewer, viewportModel, studyId) {
             };
 
 
+            var theHost = getUrl.host;
+            //theHost = SVC_CONFIG.storageUrl;
+            var baseUrl = getUrl .protocol + "//" + theHost + "/" + getUrl.pathname.split('/')[1];
+            console.log("***** BASEURL = ",baseUrl);
             // Populate imageIds array with the imageIds from each series
             // For series with frame information, get the image url's by requesting each frame
             if (series.numberOfFrames !== undefined) {
@@ -71,7 +90,11 @@ function loadStudy(studyViewer, viewportModel, studyId) {
                 for (var i = 0; i < numberOfFrames; i++) {
                     var imageId = series.instanceList[0].imageId + "?frame=" + i;
                     if (imageId.substr(0, 4) !== 'http') {
-                        imageId = "dicomweb://cornerstonetech.org/images/ClearCanvas/" + imageId;
+                        if (imageId.charAt(0)=='/') {
+                            imageId = imageId.substr(1);
+                        }
+                        imageId = "dicomweb://"+theHost+"/" + imageId;
+                        //imageId = baseUrl + imageId;
                     }
                     stack.imageIds.push(imageId);
                 }
@@ -81,7 +104,11 @@ function loadStudy(studyViewer, viewportModel, studyId) {
                     var imageId = image.imageId;
 
                     if (image.imageId.substr(0, 4) !== 'http') {
-                        imageId = "dicomweb://cornerstonetech.org/images/ClearCanvas/" + image.imageId;
+                        if (imageId.charAt(0)=='/') {
+                            imageId = imageId.substr(1);
+                        }
+                        imageId = "dicomweb://"+theHost+"/" + imageId;
+                        //imageId = baseUrl + imageId;
                     }
                     stack.imageIds.push(imageId);
                 });
@@ -142,7 +169,10 @@ function loadStudy(studyViewer, viewportModel, studyId) {
             cornerstone.enable(thumbnail);
 
             // Have cornerstone load the thumbnail image
-            cornerstone.loadAndCacheImage(imageViewer.stacks[stack.seriesIndex].imageIds[0]).then(function(image) {
+            var loadImageId = imageViewer.stacks[stack.seriesIndex].imageIds[0];
+            console.log("**** loadImageId=",loadImageId);
+            var promise = cornerstone.loadAndCacheImage(loadImageId).then(function(image) {
+                console.log("%%%% Image=",image);
                 // Make the first thumbnail active
                 if (stack.seriesIndex === 0) {
                     $(seriesElement).addClass('active');
@@ -150,6 +180,8 @@ function loadStudy(studyViewer, viewportModel, studyId) {
                 // Display the image
                 cornerstone.displayImage(thumbnail, image);
                 $(seriesElement).draggable({helper: "clone"});
+            }).fail(function(arg) {
+                console.error("what happend:",promise,promise.state());
             });
 
             // Handle thumbnail click
@@ -182,7 +214,8 @@ function loadStudy(studyViewer, viewportModel, studyId) {
         function resizeStudyViewer() {
             var studyRow = $(studyViewer).find('.studyContainer')[0];
             var height = $(studyRow).height();
-            var width = $(studyRow).width();console.log($(studyRow).innerWidth(),$(studyRow).outerWidth(),$(studyRow).width());
+            var width = $(studyRow).width();
+            //console.log($(studyRow).innerWidth(),$(studyRow).outerWidth(),$(studyRow).width());
             $(seriesList).height("100%");
             $(parentDiv).width(width - $(studyViewer).find('.thumbnailSelector:eq(0)').width());
             $(parentDiv).css({height : '100%'});

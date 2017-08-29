@@ -1,0 +1,7 @@
+# Using apache as the server.
+FROM httpd:2.4
+
+# Copy the configuration file which sets the ACCESS CONTROL ORIGIN response headers.
+COPY ./httpd.conf /usr/local/apache2/conf/httpd.conf
+
+

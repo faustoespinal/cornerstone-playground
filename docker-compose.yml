@@ -1,0 +1,28 @@
+version: "2.0"
+# Runs latest versions of locally built viewer and dicom backend.
+services:
+  imagedata: 
+    image: httpd:2.4
+    ports:
+      - "8086:80"
+    volumes:
+      - /Users/faustoespinal/Documents/Images/simple_db:/usr/local/apache2/htdocs/
+      - ./httpd.conf:/usr/local/apache2/conf/httpd.conf
+  simple-dicom-db:
+    image: simple-dicom-db:latest
+    environment:
+      - DICOM_DB_PATH=/dicom-data
+    ports:
+      - "8088:8080"
+#    volumes_from:
+#      - imagedata
+    volumes:
+      - /Users/faustoespinal/Documents/Images/simple_db:/dicom-data
+    depends_on:
+      - imagedata
+  cornerstone-viewer:
+    image: cornerstone-viewer:latest
+    ports:
+      - "8084:80"
+    depends_on:
+      - simple-dicom-db
